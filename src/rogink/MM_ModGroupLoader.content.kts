@@ -29,7 +29,3 @@ fun tryLoad(inst: MythicMobs) {
 listen<MythicReloadedEvent> { e ->
     tryLoad(e.instance)
 }
-
-onEnable{
-    MythicMobs.inst()?.let(::tryLoad)
-}
