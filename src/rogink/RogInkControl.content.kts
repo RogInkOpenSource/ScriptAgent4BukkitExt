@@ -1,5 +1,6 @@
 package rogink
 
+import cf.wayzer.script_agent.Config
 import com.github.intellectualsites.plotsquared.plot.PlotSquared
 import com.github.intellectualsites.plotsquared.plot.`object`.Plot
 import io.lumine.xikage.mythicmobs.MythicMobs
@@ -28,7 +29,7 @@ import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.random.Random
 
-name.set("RagInk 地牢控制主脚本")
+name="RagInk 地牢控制主脚本"
 
 val monsterIdentifierKey = "roginkMonsterTeamId"
 val maxRoom = 16
@@ -56,7 +57,7 @@ val playerStates
 val mobs get() = SharedData.mobGroups()
 val volatilePlayerData = ConcurrentHashMap<String, VolatilePlayerData>()
 
-PlaceHoldApi.registerGlobalVar("RogInk._onPlayerInteractEvent",::onPlayerInteractEvent)
+registerVar("RogInk._onPlayerInteractEvent","内部使用,传递交互事件",::onPlayerInteractEvent)
 fun onPlayerInteractEvent(event: PlayerInteractEvent){
     if(!enabled)return
     val rightClicked = event.action == Action.RIGHT_CLICK_AIR || event.action == Action.RIGHT_CLICK_BLOCK
@@ -68,7 +69,7 @@ fun onPlayerInteractEvent(event: PlayerInteractEvent){
     // some debug info 调试信息只给有权限的人使用
     if (player.isSneaking && player.hasPermission("RogInk.debug")) {
         if (playerState == null || vPlayerData == null) {
-            player.sendMessage("${ChatColor.YELLOW}游戏尚未开始")
+            player.sendMessage("${YELLOW}游戏尚未开始")
         } else {
             if (rightClicked) {
                 val id = playerState.room.id
@@ -88,7 +89,7 @@ fun onPlayerInteractEvent(event: PlayerInteractEvent){
         }
     } else {
         if (rightClicked) {
-            if (player.uniqueId in playerStates) return player.sendMessage("${ChatColor.YELLOW}你已经在游戏中了")
+            if (player.uniqueId in playerStates) return player.sendMessage("${YELLOW}你已经在游戏中了")
             if (roomDescriptors.isEmpty()) loadData()
             val room = SharedData.mapGenerator(roomDescriptors.map { roomInfo ->
                 RoomInfo(roomInfo.spawnData.dir.keys, roomInfo.possibility)
@@ -97,7 +98,7 @@ fun onPlayerInteractEvent(event: PlayerInteractEvent){
             player.teleport(player.location.apply { yaw = 180f })
             enterRoom(player, room)
         } else {
-            if (player.uniqueId !in playerStates) return player.sendMessage("${ChatColor.YELLOW}你未在游戏中")
+            if (player.uniqueId !in playerStates) return player.sendMessage("${YELLOW}你未在游戏中")
             quit(player)
         }
     }
@@ -164,10 +165,10 @@ onEnable {
 }
 
 onDisable {
-    PlaceHoldApi.registerGlobalVar("RogInk._onPlayerInteractEvent",null)
+    registerVar("RogInk._onPlayerInteractEvent","",null)
     playerStates.keys.forEach { uuid ->
         val player = Bukkit.getPlayer(uuid) ?: return@forEach
-        player.sendMessage("${ChatColor.RED}插件重载,强制退出")
+        player.sendMessage("${RED}插件重载,强制退出")
         quit(player)
     }
     playerStates.clear()
@@ -197,7 +198,7 @@ fun enterRoom(player: Player, room: Room, inD: BlockFace = room.inD) {
     val spawnData = descriptor.spawnData
     //特殊化 准备房,强行南人口
     if (descriptor.possibility == possibilityPrepareRoom) {
-        player.sendMessage("${ChatColor.GREEN}恭喜来到准备房")
+        player.sendMessage("${GREEN}恭喜来到准备房")
         val vector = spawnData.dir[BlockFace.SOUTH] ?: error("准备房只准有南入口")
         val location = with(plot.center) { Vector(x, y, z) }.add(vector).toLocation(world, 180f, 0f)
         player.teleport(location)
@@ -206,7 +207,7 @@ fun enterRoom(player: Player, room: Room, inD: BlockFace = room.inD) {
     val vector = spawnData.dir[inD]
     if (vector != null) {
         fun desc(dir: BlockFace): String {
-            val color = if (dir in room.links) ChatColor.GREEN else ChatColor.RED
+            val color = if (dir in room.links) GREEN else RED
             return "$color $dir"
         }
 
@@ -359,7 +360,7 @@ fun spawnMonsterAt(descriptor: String, location: Location, player: Player): List
 //		val loc = MythicMobs.inst().spawnerManager.findSpawningLocation(location,1)
         val monster = MythicMobs.inst().apiHelper.spawnMythicMob(mobName, loc, level) as Monster
         if (monster.isValid) {
-            monster.setMetadata(monsterIdentifierKey, FixedMetadataValue(Manager.pluginMain, player.uniqueId.toString()))
+            monster.setMetadata(monsterIdentifierKey, FixedMetadataValue(Config.pluginMain, player.uniqueId.toString()))
             monster.target = player
             spawnedMonsters.add(monster)
         }

@@ -6,7 +6,7 @@ import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.ItemStack
 
-name.set("RogInk掉落物控制")
+name=("RogInk掉落物控制")
 /**
  * 被怪击杀无掉落
  * 被玩家补刀有掉落物

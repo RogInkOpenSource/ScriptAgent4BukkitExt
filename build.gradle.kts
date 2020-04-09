@@ -54,6 +54,9 @@ dependencies {
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1")
     implementation("com.h2database:h2-mvstore:1.4.200")
     implementation("io.github.config4k:config4k:0.4.1")
+
+    //rogink
+    runtimeOnly(fileTree("lib"))
 }
 
 tasks {

@@ -1,6 +1,7 @@
 @file:ImportScript("rogink/lib/PlotsFlags.kt")
 @file:ImportByClass("com.github.intellectualsites.plotsquared.plot.PlotSquared")
 
+import cf.wayzer.script_agent.Config
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.player.AsyncPlayerChatEvent
@@ -32,12 +33,12 @@ listen<AsyncPlayerChatEvent> {
             if (!enabled) return@createBukkitTask
             sendWorldBorder(p, p.location, 10000.0)
             p.sendMessage("§a预览结束")
-        }.runTaskLater(Manager.pluginMain, 200)
+        }.runTaskLater(Config.pluginMain, 200)
     }
 }
 
+val handler by PlaceHold.reference<(Player, Location, Double) -> Unit>("RogInk._sendWorldBorder")
+
 fun sendWorldBorder(p: Player, loc: Location, width: Double) {
-    @Suppress("UNCHECKED_CAST")
-    val handler = PlaceHoldApi.GlobalContext.getVar("RogInk._sendWorldBorder") as? (Player, Location, Double) -> Unit
-    handler?.invoke(p, loc, width)
+    handler.invoke(p, loc, width)
 }

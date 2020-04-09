@@ -13,7 +13,7 @@ import io.lumine.xikage.mythicmobs.skills.SkillMetadata
 import io.lumine.xikage.mythicmobs.util.annotations.MythicMechanic
 import kotlin.random.Random
 
-name.set("MM_技能_随机装备")
+name=("MM_技能_随机装备")
 
 val regex = Regex("([A-Z])([0-5])")
 val items = mutableMapOf<String, MutableSet<MythicItem>>()

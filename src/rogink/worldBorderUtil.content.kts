@@ -63,7 +63,7 @@ object WorldBorderImpl : SharedData.WorldBorderUtil {
 }
 
 SharedData.worldBorderUtil = WorldBorderImpl
-PlaceHoldApi.registerGlobalVar("RogInk._sendWorldBorder", WorldBorderImpl::sendToPlayer)
+registerVar("RogInk._sendWorldBorder","发送边界给玩家",WorldBorderImpl::sendToPlayer)
 onDisable {
-    PlaceHoldApi.registerGlobalVar("RogInk._sendWorldBorder", null)
+    registerVar("RogInk._sendWorldBorder","",null)
 }
